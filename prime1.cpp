@@ -13,16 +13,41 @@ public:
 };
 
 void Prime1();
-std::vector<std::shared_ptr<NumberRange>> ReadAllNumberRanges();
-int max(const std::vector<shared_ptr<NumberRange>> & vec);
-vector<bool> InitMulArr(int max);
-int RoundSqrt(int n, float guess);
 
-void unmark(vector<bool> & vec, int num)
+std::vector<std::shared_ptr<NumberRange>> ReadAllNumberRanges();
+int max(const std::vector<shared_ptr<NumberRange>> & vec)
+{
+    int max = 0;
+    for (auto i = vec.begin(); i != vec.end(); ++i)
+    {
+        if ((*i)->max > max)
+            max = (*i)->max;
+    }
+    return max;
+}
+
+bool* InitMulArr(int max)
+{
+    bool* arr = new bool[max + 1];
+    for(auto i=0;i<max+1;++i)
+        arr[i] = true;
+    return arr;
+}
+
+int RoundSqrt(int n, float guess)
+{
+    float p = guess * guess;
+    if (n - p < 1)
+        return guess;
+    auto nextGuess = ((n / guess) + guess) / 2;
+    return RoundSqrt(n, nextGuess);
+}
+
+void unmark(bool * vec, int size, int num)
 {
     if (!(vec[num])) return;
     int curr = num * 2;
-    while (curr < vec.size())
+    while (curr < size)
     {
         // cout<<"unmarking "<<(curr)<<endl;
         vec[curr]=false;
@@ -30,11 +55,11 @@ void unmark(vector<bool> & vec, int num)
     }
 }
 
-// int main()
-// {
-//     Prime1();
-//     return 0;
-// }
+int main()
+{
+    Prime1();
+    return 0;
+}
 
 void Prime1()
 {
@@ -43,17 +68,13 @@ void Prime1()
     int maxValRoundSqrt = RoundSqrt(maxVal, maxVal / 2);
     auto mulArr = InitMulArr(maxVal);
     
-    // cout<<"maxValRoundSqrt:"<<maxValRoundSqrt<<endl;
-    
     for (auto i = 2; i < maxValRoundSqrt; ++i)
     {
-        // cout<<"entering unmark for " << i<<endl;
-        unmark(mulArr, i);
+        unmark(mulArr, maxVal, i);
     }
     
     for (auto i = vec.begin(); i != vec.end(); ++i)
     {
-        // cout<<"min "<<(*i)->min<<" max: "<<(*i)->max<<endl;
         for (auto j = (*i)->min; j <= (*i)->max; ++j)
         {
             if (mulArr[j] && j!=1)
@@ -78,29 +99,4 @@ std::vector<std::shared_ptr<NumberRange>> ReadAllNumberRanges()
         list.push_back(std::make_shared<NumberRange>(min,max));
     }
     return list;
-}
-
-int max(const std::vector<shared_ptr<NumberRange>> & vec)
-{
-    int max = 0;
-    for (auto i = vec.begin(); i != vec.end(); ++i)
-    {
-        if ((*i)->max > max)
-            max = (*i)->max;
-    }
-    return max;
-}
-
-vector<bool> InitMulArr(int max)
-{
-    return vector<bool>(max + 1, true);
-}
-
-int RoundSqrt(int n, float guess)
-{
-    float p = guess * guess;
-    if (n - p < 1)
-        return guess;
-    auto nextGuess = ((n / guess) + guess) / 2;
-    return RoundSqrt(n, nextGuess);
 }
