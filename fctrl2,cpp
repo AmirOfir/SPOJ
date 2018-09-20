@@ -1,0 +1,28 @@
+#include <iostream>
+
+using namespace std;
+
+void multiply(int i, short[] line)
+{
+    
+}
+
+int main()
+{
+    // Each line represents the multiplication for a number (1..100)
+    // in the line, the first cell denotes the number for digits
+    // and then there are the digits, ordered from smaller to higher
+    // i.e. for 16! = 20922789888000, it the array mat[15,] will be [14,0,0,0,8,8,8,9,8,7,2,2,9,0,2,0,0,0,0,0...]
+    short mat[100][159];
+    
+    mat[0][0]=1;
+    mat[0][1]=1;
+    
+    for(int i = 2; i <= 100; ++i)
+    {
+        multiply(i, mat[1]);
+    }
+    return 0;
+}
+
+
