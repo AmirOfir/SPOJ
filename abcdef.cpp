@@ -15,30 +15,17 @@ int main()
     int count = 0;
     
     for (int a = 0; a < n; ++a)
+    for (int b = 0; b < n; ++b)
+    for (int c = 0; c < n; ++c)
+    for (int d = 0; d < n; ++d)
     {
-        a = items[i];
-        for (int b = 0; b < n; ++b)
+        if (items[d] == 0) continue;
+        for (int e = 0; e < n; ++e)
+        for (int f = 0; f < n; ++f)
         {
-            b = items[i];
-            for (int c = 0; c < n; ++c)
-            {
-                c = items[i];
-                for (int d = 0; d < n; ++d)
-                {
-                    d = items[i];
-                    if (d == 0) continue;
-                    for (int e = 0; e < n; ++e)
-                    {
-                        e = items[i];
-                        for (int f = 0; f < n; ++f)
-                        {
-                            bool b = (a * b) + c == d *(f + e);
-                            if (b)
-                                ++count;
-                        }
-                    }
-                }
-            }
+            bool b = (items[a] * items[b]) + items[c] == items[d] *(items[f] + items[e]);
+            if (b)
+                ++count;
         }
     }
     
