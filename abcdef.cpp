@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 int main()
@@ -11,25 +13,55 @@ int main()
         cin >> curr;
         items[i] = curr;
     }
-    //counter
-    int count = 0;
+    
+    // Answers for (a * b)
+    vector<int> lhs;
+    vector<int> rhs;
     
     for (int a = 0; a < n; ++a)
     for (int b = 0; b < n; ++b)
     for (int c = 0; c < n; ++c)
-    for (int d = 0; d < n; ++d)
     {
-        if (items[d] == 0) continue;
-        for (int e = 0; e < n; ++e)
-        for (int f = 0; f < n; ++f)
+        int r = ((items[a] * items[b]) + items[c]);
+        lhs.push_back(r);
+        if (items[a] != 0)
         {
-            bool b = (items[a] * items[b]) + items[c] == items[d] *(items[f] + items[e]);
-            if (b)
-                ++count;
+            r = (items[a] *(items[b] + items[c]));
+            rhs.push_back(r);
         }
     }
+    std::sort(lhs.begin(), lhs.end());
+    std::sort(rhs.begin(), rhs.end());
     
+    // for (auto const& value: lhs)
+    // {
+    //     cout<<" "<<value;
+    // }
+    // cout<<endl;
+    // for (auto const& value: rhs)
+    // {
+    //     cout<<" "<<value;
+    // }
+    // cout<<endl;
+    
+    int count = 0; // counter
+    auto first = rhs.begin();
+    auto last = rhs.end();
+    for (auto const& value: lhs)
+    {
+        // cout<<value<<": ";
+        auto lower = std::lower_bound(first,last,value);
+        // we have a match
+        while (lower != last && !(value<*lower))
+        {
+            // cout<<*lower<<" ";
+            ++count;
+            ++lower;
+        }
+        // cout<<endl;
+    }
     cout<<count;
+    
     delete items;
     return 0;
 }
