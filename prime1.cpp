@@ -1,59 +1,11 @@
+// used C++14 GCC
 #include <iostream>
 #include <memory>
 #include <vector>
 
 using namespace std;
 
-struct NumberRange
-{
-public:
-    int min, max;
-    NumberRange() : min(0), max(0) {}
-    NumberRange(int m, int n) : min(m), max(n) {}
-};
-
 void Prime1();
-
-std::vector<std::shared_ptr<NumberRange>> ReadAllNumberRanges();
-int max(const std::vector<shared_ptr<NumberRange>> & vec)
-{
-    int max = 0;
-    for (auto i = vec.begin(); i != vec.end(); ++i)
-    {
-        if ((*i)->max > max)
-            max = (*i)->max;
-    }
-    return max;
-}
-
-bool* InitMulArr(int max)
-{
-    bool* arr = new bool[max + 1];
-    for(auto i=0;i<max+1;++i)
-        arr[i] = true;
-    return arr;
-}
-
-int RoundSqrt(int n, float guess)
-{
-    float p = guess * guess;
-    if (n - p < 1)
-        return guess;
-    auto nextGuess = ((n / guess) + guess) / 2;
-    return RoundSqrt(n, nextGuess);
-}
-
-void unmark(bool * vec, int size, int num)
-{
-    if (!(vec[num])) return;
-    int curr = num * 2;
-    while (curr < size)
-    {
-        // cout<<"unmarking "<<(curr)<<endl;
-        vec[curr]=false;
-        curr += num;
-    }
-}
 
 int main()
 {
@@ -63,40 +15,90 @@ int main()
 
 void Prime1()
 {
-    auto vec = ReadAllNumberRanges();
-    int maxVal = max(vec);
-    int maxValRoundSqrt = RoundSqrt(maxVal, maxVal / 2);
-    auto mulArr = InitMulArr(maxVal);
+    int count;
+    cin>>count;
     
-    for (auto i = 2; i < maxValRoundSqrt; ++i)
+    for (int i = 0; i < count; ++i)
     {
-        unmark(mulArr, maxVal, i);
-    }
-    
-    for (auto i = vec.begin(); i != vec.end(); ++i)
-    {
-        for (auto j = (*i)->min; j <= (*i)->max; ++j)
+        int min, max;
+        cin>>min>>max;
+        
+        // emit 1
+        if (min == 1) 
         {
-            if (mulArr[j] && j!=1)
-                cout<<j<<endl;
+            ++min;
         }
-        if(i != vec.end())
+        // emit 2
+        if (min == 2)
+        {
+            cout<<2<<endl;
+            ++min;
+        }
+        // make boundries odd
+        if (min % 2 == 0)
+        {
+            ++min;
+        }
+        if (max % 2 == 0)
+        {
+            --max;
+        }
+        
+        int diff = max - min + 1;
+        int size = diff;
+        bool* arr = new bool[size];
+        for(int q = 0; q < size; ++q)
+            arr[q] = true;
+        
+        // The max item to check
+        int maxToCheck = max / 2 < 32000 ? (int)(max / 2) : 32000;
+        // cout<<"maxToCheck: "<<maxToCheck<<endl;
+        bool* checks = new bool[maxToCheck];
+        int checksMax = maxToCheck -2;
+        int checksCurr = 0;
+        for(int q = 0; q < maxToCheck; ++q)
+            checks[q] = true;
+        
+        int firstToDevideByC, ci, q;
+        for (int c = 2; c <= maxToCheck; ++c)
+        {
+            if (checks[checksCurr])
+            {
+                firstToDevideByC = c >= min ? (2*c) : min;// + (min % c);
+                while (firstToDevideByC % c != 0)
+                    ++firstToDevideByC;
+                //cout<<"c: "<<c<<" firstToDevideByC:"<<firstToDevideByC<<endl<<"unmasking: ";
+                
+                for (ci = firstToDevideByC; ci <= max; ci += c)
+                {
+                    // if (ci != c)
+                    // {
+                        
+                        // cout<<ind<<"("<<ci<<"), ";
+                        arr[ci - min] = false;
+                    // }
+                }
+                // cout<<endl;
+                
+                for (q = checksCurr; q < checksMax; q += c)
+                    checks[q] = false;
+            }
+            ++checksCurr;
+        }
+        //cout << "done:" << endl;
+        
+        for (int d = 0; d < size; ++d)
+        {
+            if (arr[d])
+            {
+                cout<<(d + min)<<endl;
+            }
+        }
+        
+        delete checks;
+        delete arr;
+        
+        if (i + 1 < count)
             cout<<endl;
     }
-}
-
-std::vector<std::shared_ptr<NumberRange>> ReadAllNumberRanges()
-{
-    int size;
-    // size = 2; // 
-    cin>>size;
-    std::vector<std::shared_ptr<NumberRange>> list;
-    
-    int min,max;
-    for(int i = 0; i < size; ++i)
-    {
-        cin>>min>>max;
-        list.push_back(std::make_shared<NumberRange>(min,max));
-    }
-    return list;
 }
